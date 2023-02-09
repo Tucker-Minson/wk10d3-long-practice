@@ -96,10 +96,10 @@ router.post('/', async (req, res, next) => {
         // if(!size) res.send('Needs size.')
 
         const newTree = await Tree.create({
-            name,
+            tree: name,
             location,
-            height,
-            size
+            heightFt: height,
+            groundCircumferenceFt: size
         })
 
         res.json({
@@ -138,6 +138,10 @@ router.post('/', async (req, res, next) => {
  */
 router.delete('/:id', async (req, res, next) => {
     try {
+
+        let newTree = await Tree.findByPk(req.params.id)
+        await newTree.destroy()
+
         res.json({
             status: "success",
             message: `Successfully removed tree ${req.params.id}`,
@@ -187,6 +191,17 @@ router.delete('/:id', async (req, res, next) => {
  */
 router.put('/:id', async (req, res, next) => {
     try {
+        let { id, name, location, height, size } = req.body
+        let newTree = await Tree.findByPk(req.params.id)
+
+        await newTree.update({
+            tree: name,
+            id,
+            location,
+            heightFt: height,
+            groundCircumferenceFt: size
+        })
+        res.json(newTree)
         // Your code here
     } catch(err) {
         next({
